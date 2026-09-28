@@ -1,0 +1,8 @@
+# Kafka topics used by the insurance claims platform
+
+claims.events
+policy.events
+
+# Recommended DLTs for the two business consumers:
+claims.events.DLT
+policy.events.DLT

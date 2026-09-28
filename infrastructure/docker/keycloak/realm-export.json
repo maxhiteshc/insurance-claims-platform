@@ -1,0 +1,68 @@
+{
+  "realm": "insurance",
+  "enabled": true,
+  "displayName": "Insurance Claims Platform",
+  "roles": {
+    "realm": [
+      {
+        "name": "CUSTOMER",
+        "description": "Customer role"
+      },
+      {
+        "name": "ADJUSTER",
+        "description": "Claims adjuster role"
+      },
+      {
+        "name": "ADMIN",
+        "description": "Platform administrator role"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "insurance-gateway",
+      "name": "Insurance API Gateway",
+      "enabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "redirectUris": [
+        "http://localhost:8080/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8080"
+      ]
+    },
+    {
+      "clientId": "claim-service",
+      "name": "Claim Service",
+      "enabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "serviceAccountsEnabled": true,
+      "directAccessGrantsEnabled": false
+    },
+    {
+      "clientId": "policy-service",
+      "name": "Policy Service",
+      "enabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "serviceAccountsEnabled": true,
+      "directAccessGrantsEnabled": false
+    },
+    {
+      "clientId": "payment-service",
+      "name": "Payment Service",
+      "enabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "serviceAccountsEnabled": true,
+      "directAccessGrantsEnabled": false
+    }
+  ]
+}
