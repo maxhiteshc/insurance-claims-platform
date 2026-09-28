@@ -1,4 +1,7 @@
 package com.insurance.claim.outbox;
 
-public class OutboxEventStatus {
+public enum OutboxEventStatus {
+    PENDING,
+    PUBLISHED,
+    FAILED
 }

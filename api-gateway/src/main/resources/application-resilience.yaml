@@ -1,0 +1,68 @@
+# Add these properties to api-gateway/src/main/resources/application.yaml
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: claim-service
+          uri: ${CLAIM_SERVICE_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/v1/claims/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: claimService
+                fallbackUri: forward:/fallback/claim
+
+        - id: policy-service
+          uri: ${POLICY_SERVICE_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/v1/policies/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: policyService
+                fallbackUri: forward:/fallback/policy
+
+        - id: payment-service
+          uri: ${PAYMENT_SERVICE_URL:http://localhost:8083}
+          predicates:
+            - Path=/api/v1/payments/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: paymentService
+                fallbackUri: forward:/fallback/payment
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      claimService:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 2
+      policyService:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 2
+      paymentService:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 2
+  timelimiter:
+    instances:
+      claimService:
+        timeoutDuration: 3s
+      policyService:
+        timeoutDuration: 3s
+      paymentService:
+        timeoutDuration: 3s

@@ -6,5 +6,6 @@ public enum ClaimStatus {
     APPROVED,
     REJECTED,
     SETTLEMENT_PENDING,
-    SETTLED
+    SETTLED,
+    SETTLEMENT_FAILED
 }

@@ -1,0 +1,40 @@
+package com.insurance.gateway.filter;
+
+import java.util.UUID;
+
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.core.Ordered;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+
+@Component
+public class CorrelationIdFilter implements GlobalFilter, Ordered {
+
+    public static final String HEADER = "X-Correlation-Id";
+
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        String correlationId = exchange.getRequest().getHeaders().getFirst(HEADER);
+        if (correlationId == null || correlationId.isBlank()) {
+            correlationId = UUID.randomUUID().toString();
+        }
+
+        ServerHttpRequest request = exchange.getRequest().mutate()
+                .header(HEADER, correlationId)
+                .build();
+
+        ServerWebExchange updatedExchange = exchange.mutate().request(request).build();
+        String finalCorrelationId = correlationId;
+
+        return chain.filter(updatedExchange)
+                .then(Mono.fromRunnable(() -> exchange.getResponse().getHeaders().add(HEADER, finalCorrelationId)));
+    }
+
+    @Override
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
+}

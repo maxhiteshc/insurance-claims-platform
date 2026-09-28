@@ -1,0 +1,9 @@
+# Merge these properties into claim-service/src/main/resources/application.yaml.
+clients:
+  policy-service:
+    base-url: ${CLIENTS_POLICY_SERVICE_BASE_URL:http://localhost:8082}
+  payment-service:
+    base-url: ${CLIENTS_PAYMENT_SERVICE_BASE_URL:http://localhost:8083}
+settlement:
+  saga:
+    recovery-delay-ms: ${SETTLEMENT_SAGA_RECOVERY_DELAY_MS:5000}
